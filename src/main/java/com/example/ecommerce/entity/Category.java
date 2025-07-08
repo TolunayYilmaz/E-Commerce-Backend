@@ -9,17 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "product_comment",schema = "ecommerce")
-public class ProductComment {
+@Table(name = "category",schema = "ecommerce")
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
-    private User user;
-    @OneToOne
-    private Product product;
-    private String comment;
-    private Double rating;
-
+    private String name;
 }
