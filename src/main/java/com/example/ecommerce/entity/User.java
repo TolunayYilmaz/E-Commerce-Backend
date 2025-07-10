@@ -1,6 +1,10 @@
 package com.example.ecommerce.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +20,17 @@ import java.util.Set;
 @Table(name = "user",schema = "ecommerce")
 public class User implements UserDetails {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Email
     private String email;
+    @NotNull
+    @NotBlank
+    @NotEmpty
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
