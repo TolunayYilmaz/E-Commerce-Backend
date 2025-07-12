@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/address")
+@RequestMapping("/creditCard")
 @RequiredArgsConstructor
 public class CreditCardController {
     @Autowired

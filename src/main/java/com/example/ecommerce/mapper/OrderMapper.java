@@ -1,12 +1,11 @@
 package com.example.ecommerce.mapper;
-
 import com.example.ecommerce.dto.OrderResponseDto;
-import com.example.ecommerce.dto.ProductResponseDto;
 import com.example.ecommerce.entity.Order;
-import com.example.ecommerce.entity.Product;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+@Component
 public class OrderMapper {
 
     public OrderResponseDto toResponse(Order order){
