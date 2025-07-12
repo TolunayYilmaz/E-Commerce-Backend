@@ -5,21 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "order",schema = "ecommerce")
-public class Order {
+@Table(name = "credit_card",schema = "ecommerce")
+public class CreditCard {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
-    private User user;
-    @Column(name = "total_price")
-    private Double totalPrice;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems;
+    @Column(name = "card_name")
+    private String cardName;
+    @Column(name = "card_number")
+    private Integer cardNumber;
+    private Integer month;
+    private Integer year;
 }

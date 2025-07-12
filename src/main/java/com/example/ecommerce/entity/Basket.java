@@ -11,10 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "cart",schema = "ecommerce")
-public class Cart {
+public class Basket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "user_id")
     private Long userId;
 
     @ManyToMany
