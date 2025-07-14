@@ -1,5 +1,6 @@
 package com.example.ecommerce.controller;
 import com.example.ecommerce.dto.LoginRequest;
+import com.example.ecommerce.dto.LoginResponse;
 import com.example.ecommerce.dto.RegisterRequest;
 import com.example.ecommerce.dto.RegisterResponse;
 import com.example.ecommerce.service.AuthService;
@@ -23,7 +24,7 @@ public class AuthController {
         return authService.register(registerRequest);
     }
     @PostMapping("/login")
-    public RegisterResponse login(@Validated @RequestBody LoginRequest loginRequest){
+    public LoginResponse login(@Validated @RequestBody LoginRequest loginRequest){
         return authService.login(loginRequest);
     }
 }

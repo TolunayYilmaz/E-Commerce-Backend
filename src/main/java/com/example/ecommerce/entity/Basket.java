@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "cart",schema = "ecommerce")
+@Table(name = "basket",schema = "ecommerce")
 public class Basket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

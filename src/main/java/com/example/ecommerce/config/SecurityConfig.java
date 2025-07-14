@@ -29,7 +29,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity.csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(auth->{
-                    auth.requestMatchers("auth/**");
+                    auth.requestMatchers("auth/**").permitAll();
                     auth.requestMatchers("/cart").hasAuthority("USER");
                     auth.anyRequest().authenticated();
 

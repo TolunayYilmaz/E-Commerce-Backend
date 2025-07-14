@@ -7,6 +7,7 @@ import com.example.ecommerce.service.AddressService;
 import com.example.ecommerce.service.BasketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,11 +23,17 @@ public class BasketController {
     public List<Basket> getAllBasket(){
         return basketService.getBasket();
     }
+    @PostMapping
+    public  Basket saveBasket(@RequestBody Basket basket){
 
-    @PostMapping()
-    public Basket saveAddress(@RequestBody Basket basket){
-        return  basketService.saveBasket(basket);
+        return basketService.saveBasket(basket);
     }
+
+//    @PostMapping()
+//    public Basket saveAddress(@RequestBody Address address,@RequestAttribute("userEmail") String userEmail){
+//
+//        return basketService.saveBasket(address,userEmail);
+//    }
     @PutMapping("{id}")
     public Basket updateAddress(@PathVariable Long id,@RequestBody Basket basket){
         return  basketService.updateBasket(id,basket);
