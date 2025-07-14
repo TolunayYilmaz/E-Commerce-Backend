@@ -5,6 +5,7 @@ import com.example.ecommerce.dto.ProductResponseDto;
 import com.example.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -22,5 +23,10 @@ public class ProductController {
     @PostMapping()
     public ProductResponseDto createProduct(@RequestBody@Validated ProductRequestDto productRequestDto){
         return productService.createProduct(productRequestDto);
+    }
+    @PostMapping("/all")
+    public ResponseEntity<String> syncProducts() {
+        productService.allFetch();
+        return ResponseEntity.ok("Ürünler başarıyla local'e aktarıldı.");
     }
 }

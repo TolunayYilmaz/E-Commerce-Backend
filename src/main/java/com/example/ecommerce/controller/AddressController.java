@@ -1,6 +1,7 @@
 package com.example.ecommerce.controller;
 
 import com.example.ecommerce.entity.Address;
+import com.example.ecommerce.repository.UserRepository;
 import com.example.ecommerce.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,12 @@ public class AddressController {
 
     @GetMapping()
     public List<Address> getAllAddress(){
-        return  addressService.getAllAddress();
+        return  addressService.getUserAllAddress();
     }
     @PostMapping()
     public Address saveAddress(@RequestBody Address address){
-        return  addressService.saveAddress(address);
+
+        return  addressService.addAddress(address);
     }
     @PutMapping("{id}")
     public Address updateAddress(@PathVariable Long id,@RequestBody Address address){

@@ -1,24 +1,17 @@
-package com.example.ecommerce.entity;
+package com.example.ecommerce.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "category",schema = "ecommerce")
-public class Category {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@AllArgsConstructor
+public class CategoryDto {
     private Long id;
     private String code;
     private String title;
     private String img;
     private Double rating;
     private String gender;
-
 }

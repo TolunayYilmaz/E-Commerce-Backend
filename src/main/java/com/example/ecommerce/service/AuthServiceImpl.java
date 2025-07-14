@@ -46,11 +46,19 @@ public class AuthServiceImpl implements AuthService{
             throw new ApiException("Girmiş olduğunuz email ile daha önce kayıt olmuşsunuz.", HttpStatus.CONFLICT);
         }
         String encodedPassword=passwordEncoder.encode(registerRequest.password());
-        Role role = roleRepository.finbyRole("USER");
+        Optional<Role> role = roleRepository.finbyRole("USER");
+        Role finalRole;
+        if (role.isPresent()) {
+            finalRole = role.get();
+        } else {
+            Role newRole = new Role();
+            newRole.setAuthority("USER");
+            finalRole = roleRepository.save(newRole);
+        }
         User user = new User();
         user.setEmail(registerRequest.email());
         user.setPassword(encodedPassword);
-        user.setRoles(Set.of(role));
+        user.setRoles(Set.of(finalRole));
         user=userRepository.save(user);
         return new RegisterResponse(user.getEmail(),"Kullanıcı Başarı ile kaydoldu");
     }

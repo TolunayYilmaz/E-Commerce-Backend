@@ -9,4 +9,6 @@ public interface AddressService {
     Address updateAddress(Long id,Address address);
     Address deleteAddress(Long id);
     List<Address> getAllAddress();
+    Address addAddress(Address address);
+    List<Address> getUserAllAddress();
 }

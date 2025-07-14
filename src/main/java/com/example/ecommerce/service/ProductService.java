@@ -6,4 +6,5 @@ import java.util.List;
 public interface ProductService {
     List<ProductResponseDto> getAllProducts();
     ProductResponseDto createProduct(ProductRequestDto productRequestDto);
+    void allFetch();
 }
