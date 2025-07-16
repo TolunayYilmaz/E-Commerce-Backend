@@ -9,5 +9,5 @@ public class ApiConfig {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
-    }
+    }//Locale Veri çekmek için ApiConfig yapıldı.
 }

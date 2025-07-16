@@ -52,7 +52,7 @@ public class BasketServiceImpl extends BaseService implements BasketService {
                 new ApiException("Sepet bulunamadı", HttpStatus.NOT_FOUND)
         );
        if(!user.getBasketList().contains(basketDelete)){
-           new ApiException("Kullanıcıya ait sepet bulunamadı");
+          throw new ApiException("Kullanıcıya ait sepet bulunamadı",HttpStatus.NOT_FOUND);
        }
        user.getBasketList().remove(basketDelete);
        basketRepository.delete(basketDelete);
