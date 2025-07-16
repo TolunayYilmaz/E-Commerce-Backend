@@ -42,9 +42,20 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
     private List<Address> addressList;
+
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
     private List<CreditCard> creditCardList;
+
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private List<Basket> basketList;
+
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private List<Order> orderList;
 
 
     @Override

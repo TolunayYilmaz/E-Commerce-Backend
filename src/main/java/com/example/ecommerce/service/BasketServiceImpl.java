@@ -7,6 +7,7 @@ import com.example.ecommerce.entity.User;
 import com.example.ecommerce.exceptions.ApiException;
 import com.example.ecommerce.repository.BasketRepository;
 import com.example.ecommerce.repository.UserRepository;
+import com.example.ecommerce.service.parent.BaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class BasketServiceImpl implements BasketService {
+public class BasketServiceImpl extends BaseService implements BasketService {
     @Autowired
     private BasketRepository basketRepository;
     @Autowired
@@ -28,35 +29,43 @@ public class BasketServiceImpl implements BasketService {
     private AuthService authService;
     @Override
     public Basket saveBasket(Basket basket) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();  // Basic Auth kullanıcı adı (email)
-        User user = userRepository.finbyEmail(userEmail)
-                .orElseThrow(() -> new ApiException("Kullanıcı bulunamadı", HttpStatus.NOT_FOUND));
-        basket.setUserId(user.getId());
+
+        User user=getCurrentUser();
+        user.getBasketList().add(basket);
+        basket.setUserId(getCurrentUser().getId());
         return basketRepository.save(basket);
     }
 
     @Override
     public Basket updateBasket(Long id ,Basket basket) {
-        Optional<Basket> basketOptional = basketRepository.findById(id);
-        basketOptional.orElseThrow(()->
-                new ApiException("Kart bulunamadı", HttpStatus.NOT_FOUND)
-        );
+
+       Basket basketUpdate = basketRepository.findById(id).orElseThrow(()->  new ApiException("Sepet bulunamadı", HttpStatus.NOT_FOUND));
+        basketUpdate.setUserId(getCurrentUser().getId());
+        basketUpdate.setProducts(basket.getProducts());
         return basketRepository.save(basket);
     }
 
     @Override
     public Basket deleteBasket(Long id) {
-        Optional<Basket> basketOptional = basketRepository.findById(id);
-       Basket basket= basketOptional.orElseThrow(()->
-                new ApiException("Kart bulunamadı", HttpStatus.NOT_FOUND)
+        User user=getCurrentUser();
+        Basket basketDelete = basketRepository.findById(id).orElseThrow(()->
+                new ApiException("Sepet bulunamadı", HttpStatus.NOT_FOUND)
         );
-       basketRepository.delete(basket);
-        return basket;
+       if(!user.getBasketList().contains(basketDelete)){
+           new ApiException("Kullanıcıya ait sepet bulunamadı");
+       }
+       user.getBasketList().remove(basketDelete);
+       basketRepository.delete(basketDelete);
+        return basketDelete;
     }
 
     @Override
     public List<Basket> getBasket() {
-    return  basketRepository.findAll();
+        User user=getCurrentUser();
+        if(user.getBasketList().isEmpty()){
+            throw new ApiException("Sepet Boş",HttpStatus.NOT_FOUND);
+        }
+    return  user.getBasketList();
     }
+
 }

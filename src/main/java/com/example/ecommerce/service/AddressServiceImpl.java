@@ -5,6 +5,7 @@ import com.example.ecommerce.entity.User;
 import com.example.ecommerce.exceptions.ApiException;
 import com.example.ecommerce.repository.AddressRepository;
 import com.example.ecommerce.repository.UserRepository;
+import com.example.ecommerce.service.parent.BaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,33 +19,14 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AddressServiceImpl implements AddressService{
+public class AddressServiceImpl extends BaseService implements AddressService{
 
     @Autowired
     private AddressRepository addressRepository;
-    @Autowired
-    private UserRepository userRepository;
     @Override
     public Address saveAddress(Address address) {
         return addressRepository.save(address);
     }
-
-    @Override
-    public Address updateAddress(Long id, Address address) {
-        Optional<Address> addressOptional= addressRepository.findById(id);
-        Address addressold= addressOptional.orElseThrow(()->new ApiException("Adres bulunamadı", HttpStatus.NOT_FOUND));
-        addressRepository.save(address);
-        return addressold;
-    }
-
-    @Override
-    public Address deleteAddress(Long id) {
-        Optional<Address> addressOptional= addressRepository.findById(id);
-        Address addressold= addressOptional.orElseThrow(()->new ApiException("Adres bulunamadı", HttpStatus.NOT_FOUND));
-        addressRepository.delete(addressold);
-        return addressold;
-    }
-
     @Override
     public List<Address> getAllAddress() {
         if(addressRepository.findAll().isEmpty()){
@@ -54,22 +36,57 @@ public class AddressServiceImpl implements AddressService{
     }
     @Override
     public List<Address> getUserAllAddress() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();  // Basic Auth kullanıcı adı (email)
-        User user = userRepository.finbyEmail(userEmail).orElseThrow(() -> new ApiException("User not found",HttpStatus.NOT_FOUND));
+        User user=getCurrentUser();
        return user.getAddressList();
+    }
+    @Override
+    public Address deleteAddress(Long id) {
+        User user = getCurrentUser(); // Giriş yapan kullanıcıyı al
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new ApiException("Adres bulunamadı", HttpStatus.NOT_FOUND));
 
+        // Bu adres giriş yapan kullanıcıya mı ait? Kontrol et
+        if (!user.getAddressList().contains(address)) {
+            throw new ApiException("Bu adrese silme yetkiniz yok", HttpStatus.FORBIDDEN);
+        }
+
+        // Adresi sil
+        user.getAddressList().remove(address); // ilişkiden çıkar
+        addressRepository.delete(address);     // DB'den sil
+        return address;
     }
 
+    @Override
+    public Address updateAddress(Long id, Address updatedAddress) {
+        User user = getCurrentUser();
 
+        Address existingAddress = addressRepository.findById(id)
+                .orElseThrow(() -> new ApiException("Adres bulunamadı", HttpStatus.NOT_FOUND));
+
+        // Bu adres kullanıcıya ait mi? Kontrol et
+        if (!user.getAddressList().contains(existingAddress)) {
+            throw new ApiException("Bu adrese güncelleme yetkiniz yok", HttpStatus.FORBIDDEN);
+        }
+
+        // Alanları tek tek güncelle
+        existingAddress.setTitle(updatedAddress.getTitle());
+        existingAddress.setName(updatedAddress.getName());
+        existingAddress.setSurname(updatedAddress.getSurname());
+        existingAddress.setPhoneNumber(updatedAddress.getPhoneNumber());
+        existingAddress.setCity(updatedAddress.getCity());
+        existingAddress.setDistrict(updatedAddress.getDistrict());
+        existingAddress.setNeighborhood(updatedAddress.getNeighborhood());
+        existingAddress.setAddressDetail(updatedAddress.getAddressDetail());
+
+        return addressRepository.save(existingAddress);
+    }
 
     @Override
     public Address addAddress(Address address) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();  // Basic Auth kullanıcı adı (email)
-        User user = userRepository.finbyEmail(userEmail).orElseThrow(() -> new ApiException("User not found",HttpStatus.NOT_FOUND));
+        User user=getCurrentUser();
         user.getAddressList().add(address);
         userRepository.save(user);
         return address;
     }
+
 }

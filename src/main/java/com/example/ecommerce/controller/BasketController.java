@@ -29,11 +29,7 @@ public class BasketController {
         return basketService.saveBasket(basket);
     }
 
-//    @PostMapping()
-//    public Basket saveAddress(@RequestBody Address address,@RequestAttribute("userEmail") String userEmail){
-//
-//        return basketService.saveBasket(address,userEmail);
-//    }
+
     @PutMapping("{id}")
     public Basket updateAddress(@PathVariable Long id,@RequestBody Basket basket){
         return  basketService.updateBasket(id,basket);
