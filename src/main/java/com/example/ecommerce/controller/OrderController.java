@@ -1,5 +1,6 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.dto.OrderRequestDto;
 import com.example.ecommerce.dto.OrderResponseDto;
 import com.example.ecommerce.dto.ProductRequestDto;
 import com.example.ecommerce.dto.ProductResponseDto;
@@ -24,7 +25,7 @@ public class OrderController {
         return orderService.getAllOrders();
     }
     @PostMapping()
-    public OrderResponseDto createProduct(@RequestBody @Validated Order order){
-        return orderService.createOrder(order);
+    public OrderResponseDto createProduct(@RequestBody @Validated OrderRequestDto orderRequestDto){
+        return orderService.createOrder(orderRequestDto);
     }
 }

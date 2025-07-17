@@ -1,21 +1,22 @@
 package com.example.ecommerce.service;
 
+import com.example.ecommerce.dto.AddressRequestDto;
 import com.example.ecommerce.entity.Address;
 import com.example.ecommerce.entity.User;
 import com.example.ecommerce.exceptions.ApiException;
+import com.example.ecommerce.mapper.AddressMapper;
 import com.example.ecommerce.repository.AddressRepository;
-import com.example.ecommerce.repository.UserRepository;
+
 import com.example.ecommerce.service.parent.BaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,9 @@ public class AddressServiceImpl extends BaseService implements AddressService{
 
     @Autowired
     private AddressRepository addressRepository;
+
+    @Autowired
+    private AddressMapper addressMapper;
     @Override
     public Address saveAddress(Address address) {
         return addressRepository.save(address);
@@ -57,7 +61,7 @@ public class AddressServiceImpl extends BaseService implements AddressService{
     }
 
     @Override
-    public Address updateAddress(Long id, Address updatedAddress) {
+    public Address updateAddress(Long id, AddressRequestDto updatedAddress) {
         User user = getCurrentUser();
 
         Address existingAddress = addressRepository.findById(id)
@@ -69,21 +73,22 @@ public class AddressServiceImpl extends BaseService implements AddressService{
         }
 
         // Alanları tek tek güncelle
-        existingAddress.setTitle(updatedAddress.getTitle());
-        existingAddress.setName(updatedAddress.getName());
-        existingAddress.setSurname(updatedAddress.getSurname());
-        existingAddress.setPhoneNumber(updatedAddress.getPhoneNumber());
-        existingAddress.setCity(updatedAddress.getCity());
-        existingAddress.setDistrict(updatedAddress.getDistrict());
-        existingAddress.setNeighborhood(updatedAddress.getNeighborhood());
-        existingAddress.setAddressDetail(updatedAddress.getAddressDetail());
+        existingAddress.setTitle(updatedAddress.title() != null ? updatedAddress.title() : existingAddress.getTitle());
+        existingAddress.setName(updatedAddress.name()!= null ? updatedAddress.name():existingAddress.getTitle());
+        existingAddress.setSurname(updatedAddress.surname()!= null ? updatedAddress.surname():existingAddress.getSurname());
+        existingAddress.setPhoneNumber(updatedAddress.phoneNumber()!= null ? updatedAddress.phoneNumber():existingAddress.getPhoneNumber());
+        existingAddress.setCity(updatedAddress.city()!= null ? updatedAddress.city():existingAddress.getCity());
+        existingAddress.setDistrict(updatedAddress.district()!= null ? updatedAddress.district():existingAddress.getDistrict());
+        existingAddress.setNeighborhood(updatedAddress.neighborhood()!= null ? updatedAddress.neighborhood():existingAddress.getDistrict());
+        existingAddress.setAddressDetail(updatedAddress.addressDetail()!= null ?updatedAddress.addressDetail(): existingAddress.getAddressDetail());
 
         return addressRepository.save(existingAddress);
     }
 
     @Override
-    public Address addAddress(Address address) {
+    public Address addAddress(AddressRequestDto addressRequestDto) {
         User user=getCurrentUser();
+        Address address=addressMapper.toEntity(addressRequestDto);
         user.getAddressList().add(address);
         userRepository.save(user);
         return address;

@@ -17,8 +17,9 @@ public class CreditCard {
     private Long id;
     @Column(name = "card_name")
     private String cardName;
-    @Column(name = "card_number")
-    private Integer cardNumber;
+    @Column(name = "card_number",unique = true)
+    private Long cardNumber;
     private Integer month;
     private Integer year;
+    private Integer ccv;
 }

@@ -7,6 +7,7 @@ import com.example.ecommerce.dto.ProductResponseDto;
 import com.example.ecommerce.entity.Category;
 import com.example.ecommerce.entity.Product;
 import com.example.ecommerce.entity.ProductImage;
+import com.example.ecommerce.exceptions.ApiException;
 import com.example.ecommerce.mapper.FetchMapper;
 import com.example.ecommerce.mapper.ProductMapper;
 import com.example.ecommerce.repository.CategoryRepository;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -45,6 +47,12 @@ public class ProductServiceImpl implements ProductService{
         return productResponse;
     }
 
+
+    @Override
+    public Product getProductById(Long id) {
+
+        return  productRepository.findById(id).orElseThrow(()-> new  ApiException("Ürün bulunmamaktadır", HttpStatus.NOT_FOUND));
+    }
     @Override
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
        ProductResponseDto productResponseDto=  productMapper.toResponse(productRepository.save(productMapper.toEntity(productRequestDto)));

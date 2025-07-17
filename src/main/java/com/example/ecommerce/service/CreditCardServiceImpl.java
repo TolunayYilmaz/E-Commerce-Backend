@@ -9,9 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -62,9 +61,16 @@ public class CreditCardServiceImpl extends BaseService implements CreditCardServ
     @Override
     public List<CreditCard> getAllCard() {
         User user=getCurrentUser();
-       if( user.getBasketList().isEmpty()){
+       if( user.getCreditCardList().isEmpty()){
            throw new ApiException("Kullanıcıya ait kart bulunmamaktadır.",HttpStatus.NOT_FOUND);
        }
         return user.getCreditCardList();
     }
+
+    @Override
+    public CreditCard getCard(Long cardNo) {
+        return creditCardRepository.getCreditCard(cardNo).orElseThrow(()->new ApiException("Kredi kartı bulunamadı",HttpStatus.NOT_FOUND));
+    }
+
+
 }

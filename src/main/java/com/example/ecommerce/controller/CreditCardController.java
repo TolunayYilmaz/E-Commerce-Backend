@@ -2,10 +2,12 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.entity.Address;
 import com.example.ecommerce.entity.CreditCard;
+import com.example.ecommerce.exceptions.ApiException;
 import com.example.ecommerce.service.AddressService;
 import com.example.ecommerce.service.CreditCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,19 +20,24 @@ public class CreditCardController {
     private CreditCardService creditCardService;
 
     @GetMapping()
-    public List<CreditCard> getAllAddress(){
+    public List<CreditCard> getAllCreditCards(){
         return  creditCardService.getAllCard();
     }
     @PostMapping()
-    public CreditCard saveAddress(@RequestBody CreditCard creditCard){
-        return  creditCardService.saveCard(creditCard);
+    public CreditCard saveCreditCard(@RequestBody CreditCard creditCard){
+        try {
+           return creditCardService.saveCard(creditCard);
+        } catch (Exception e) {
+            throw new ApiException("Veri tabanında aynı kart bulunmaktadır", HttpStatus.CONFLICT);
+        }
+
     }
     @PutMapping("{id}")
-    public CreditCard updateAddress(@PathVariable Long id,@RequestBody CreditCard creditCard){
+    public CreditCard updateCreditCard(@PathVariable Long id,@RequestBody CreditCard creditCard){
         return  creditCardService.updateCard(id,creditCard);
     }
     @DeleteMapping("{id}")
-    public CreditCard deleteAddress(@PathVariable Long id){
+    public CreditCard deleteCreditCard(@PathVariable Long id){
         return  creditCardService.deleteCard(id);
     }
 }

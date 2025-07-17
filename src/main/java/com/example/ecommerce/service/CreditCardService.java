@@ -3,6 +3,7 @@ package com.example.ecommerce.service;
 import com.example.ecommerce.entity.CreditCard;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CreditCardService {
 
@@ -10,4 +11,5 @@ public interface CreditCardService {
     CreditCard updateCard(Long id,CreditCard creditCard);
     CreditCard deleteCard(Long id);
     List<CreditCard> getAllCard();
+    CreditCard getCard(Long cardNo);
 }

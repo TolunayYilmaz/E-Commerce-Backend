@@ -18,7 +18,7 @@ public class Address {
     private String name;
     private String surname;
     @Column(name = "phone_number")
-    private Integer phoneNumber;
+    private String phoneNumber;
     private String city;
     private String district;
     private String neighborhood;

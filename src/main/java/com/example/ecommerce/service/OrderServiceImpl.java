@@ -1,7 +1,10 @@
 package com.example.ecommerce.service;
 
+import com.example.ecommerce.dto.OrderRequestDto;
 import com.example.ecommerce.dto.OrderResponseDto;
 import com.example.ecommerce.entity.Order;
+import com.example.ecommerce.entity.OrderItem;
+import com.example.ecommerce.entity.Product;
 import com.example.ecommerce.entity.User;
 import com.example.ecommerce.exceptions.ApiException;
 import com.example.ecommerce.mapper.OrderMapper;
@@ -21,6 +24,9 @@ public class OrderServiceImpl extends BaseService implements OrderService{
     private OrderRepository orderRepository;
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired CreditCardService creditCardService;
+    @Autowired
+    private  ProductService productService;
     @Override
     public List<OrderResponseDto> getAllOrders() {
         User user=getCurrentUser();
@@ -31,13 +37,24 @@ public class OrderServiceImpl extends BaseService implements OrderService{
     }
 
     @Override
-    public OrderResponseDto createOrder(Order order) {
-
+    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
         User user=getCurrentUser();
+        Order order=orderMapper.toEntity(orderRequestDto);
         if(user.getOrderList().contains(order)){
             throw new ApiException("Bu ürün için zaten bir sipariş verdiniz.",HttpStatus.CONFLICT);
         }
         user.getOrderList().add(order);
+        List<OrderItem> orderItems = orderRequestDto.orderItems().stream()
+                .map(dto -> {
+                    Product product = productService.getProductById(dto.getProduct().getId()); // productId'yi dto'dan al
+                    OrderItem orderItem = new OrderItem();
+                    orderItem.setProduct(product);
+                    orderItem.setQuantity(dto.getQuantity());
+                    return orderItem;//total price hesaplamaları eklenecek
+                })
+                .toList();
+
+        order.setOrderItems(orderItems);
         orderRepository.save(order);
         return orderMapper.toResponse(orderRepository.save(order));
     }
