@@ -24,7 +24,8 @@ public class Order {
     private LocalDateTime orderDate;
     @ManyToOne
     private CreditCard creditCard;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
     @Column(name = "total_price")
     private Double totalPrice;

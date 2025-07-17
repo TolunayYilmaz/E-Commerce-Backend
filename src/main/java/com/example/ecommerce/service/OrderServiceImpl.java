@@ -40,22 +40,7 @@ public class OrderServiceImpl extends BaseService implements OrderService{
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
         User user=getCurrentUser();
         Order order=orderMapper.toEntity(orderRequestDto);
-        if(user.getOrderList().contains(order)){
-            throw new ApiException("Bu ürün için zaten bir sipariş verdiniz.",HttpStatus.CONFLICT);
-        }
-        user.getOrderList().add(order);
-        List<OrderItem> orderItems = orderRequestDto.orderItems().stream()
-                .map(dto -> {
-                    Product product = productService.getProductById(dto.getProduct().getId()); // productId'yi dto'dan al
-                    OrderItem orderItem = new OrderItem();
-                    orderItem.setProduct(product);
-                    orderItem.setQuantity(dto.getQuantity());
-                    return orderItem;//total price hesaplamaları eklenecek
-                })
-                .toList();
-
-        order.setOrderItems(orderItems);
-        orderRepository.save(order);
+        user.addOrder(order);
         return orderMapper.toResponse(orderRepository.save(order));
     }
 

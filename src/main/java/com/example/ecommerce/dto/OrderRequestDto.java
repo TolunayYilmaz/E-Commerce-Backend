@@ -7,6 +7,6 @@ import java.util.List;
 
 public record OrderRequestDto(Long addressId, LocalDateTime orderDate, Long cardNo, String cardName,
                               Integer  cardExpireMonth, Integer cardExpireYear,Integer cardCcv, Double totalPrice,
-                              List<OrderItem> orderItems) {
+                              List<OrderItemDto> products) {
 }
 //Request tarafı düzelticelcek
