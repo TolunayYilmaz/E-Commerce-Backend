@@ -12,26 +12,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/address")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class AddressController {
     @Autowired
     private AddressService addressService;
 
-    @GetMapping()
+    @GetMapping("/address")
     public List<Address> getAllAddress(){
         return  addressService.getUserAllAddress();
     }
-    @PostMapping()
+    @PostMapping("/address")
     public Address saveAddress(@RequestBody AddressRequestDto addressRequestDto){
 
         return  addressService.addAddress(addressRequestDto);
     }
-    @PutMapping("{id}")
+    @PutMapping("/address/{id}")
     public Address updateAddress(@PathVariable Long id,@RequestBody AddressRequestDto address){
         return  addressService.updateAddress(id,address);
     }
-    @DeleteMapping("{id}")
+    @DeleteMapping("/address/{id}")
     public Address deleteAddress(@PathVariable Long id){
         return  addressService.deleteAddress(id);
     }

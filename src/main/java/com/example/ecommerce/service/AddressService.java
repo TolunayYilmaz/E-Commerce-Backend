@@ -6,7 +6,7 @@ import com.example.ecommerce.entity.Address;
 import java.util.List;
 
 public interface AddressService {
-    Address saveAddress(Address address);
+
     Address updateAddress(Long id,AddressRequestDto address);
     Address deleteAddress(Long id);
     List<Address> getAllAddress();

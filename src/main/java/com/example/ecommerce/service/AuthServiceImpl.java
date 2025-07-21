@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService{
     @Autowired
     private final PasswordEncoder passwordEncoder;
     @Autowired
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
     @Value("${ecommerce.jwt.secret}")
     private String secretKey;
@@ -46,15 +46,16 @@ public class AuthServiceImpl implements AuthService{
             throw new ApiException("Girmiş olduğunuz email ile daha önce kayıt olmuşsunuz.", HttpStatus.CONFLICT);
         }
         String encodedPassword=passwordEncoder.encode(registerRequest.password());
-        Optional<Role> role = roleRepository.finbyRole("USER");
+        Optional<Role> role = roleService.getRole(registerRequest.role());
         Role finalRole;
         if (role.isPresent()) {
             finalRole = role.get();
         } else {
-            Role newRole = new Role();
-            newRole.setAuthority("USER");
-            finalRole = roleRepository.save(newRole);
+            roleService.addAllDefaultRole();
+            finalRole =roleService.getRole(registerRequest.role()).orElseThrow(()->new ApiException("Aranan Rol bulunamadı",HttpStatus.NOT_FOUND));
+
         }
+
         User user = new User();
         user.setEmail(registerRequest.email());
         user.setPassword(encodedPassword);

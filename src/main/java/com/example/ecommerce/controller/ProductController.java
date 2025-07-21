@@ -8,6 +8,8 @@ import com.example.ecommerce.service.CommentService;
 import com.example.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +24,8 @@ public class ProductController {
     @Autowired
     private  final CommentService commentService;
     @GetMapping()
-    public List<ProductResponseDto> getAllProducts(){
-        return productService.getAllProducts();
+    public List<ProductResponseDto> getAllProducts(@PageableDefault(size = 25) Pageable pageable){
+        return productService.getAllProducts(pageable);
     }
     @PostMapping()
     public ProductResponseDto createProduct(@RequestBody@Validated ProductRequestDto productRequestDto){

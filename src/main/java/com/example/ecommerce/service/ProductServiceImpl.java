@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.data.domain.Pageable;
+
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,9 +44,11 @@ public class ProductServiceImpl implements ProductService{
     private  final FetchMapper fetchMapper;
 
     @Override
-    public List<ProductResponseDto> getAllProducts() {
-        List<ProductResponseDto> productResponse=productRepository.findAll().stream().map(product -> productMapper.toResponse(product)).toList();
-        return productResponse;
+    public List<ProductResponseDto> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .stream()
+                .map(productMapper::toResponse)
+                .toList();
     }
 
 

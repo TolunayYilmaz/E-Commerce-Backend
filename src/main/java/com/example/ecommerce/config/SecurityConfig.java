@@ -2,6 +2,8 @@ package com.example.ecommerce.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -31,10 +33,20 @@ public class SecurityConfig {
         return httpSecurity.csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(auth->{
                     auth.requestMatchers("auth/**").permitAll();
-                    auth.requestMatchers("/cart").hasAuthority("USER");
+                    auth.requestMatchers("/cart").hasAuthority("customer");
+                    auth.requestMatchers(HttpMethod.GET, "/roles").permitAll(); // herkes erişebilir
+                    auth.requestMatchers(HttpMethod.POST, "/roles").hasAuthority("admin");
+                    auth.requestMatchers(HttpMethod.POST, "/products/all").hasAuthority("admin");// sadece admin
                     auth.anyRequest().authenticated();
 
                 }).httpBasic(Customizer.withDefaults())
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpStatus.FORBIDDEN.value());
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\": \"Bu islem için yetkiniz yok.\"}");
+                        })
+                )
                 .build();
     }
 

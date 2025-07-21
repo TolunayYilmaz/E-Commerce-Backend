@@ -27,10 +27,7 @@ public class AddressServiceImpl extends BaseService implements AddressService{
 
     @Autowired
     private AddressMapper addressMapper;
-    @Override
-    public Address saveAddress(Address address) {
-        return addressRepository.save(address);
-    }
+
     @Override
     public List<Address> getAllAddress() {
         if(addressRepository.findAll().isEmpty()){
