@@ -36,6 +36,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/cart").hasAuthority("customer");
                     auth.requestMatchers(HttpMethod.GET, "/roles").permitAll(); // herkes erişebilir
                     auth.requestMatchers(HttpMethod.POST, "/roles").hasAuthority("admin");
+                    auth.requestMatchers(HttpMethod.GET, "/products").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/products/all").hasAuthority("admin");// sadece admin
                     auth.anyRequest().authenticated();
 
