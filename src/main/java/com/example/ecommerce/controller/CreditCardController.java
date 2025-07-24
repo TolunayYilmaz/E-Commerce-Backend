@@ -1,5 +1,7 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.dto.CreditCardRequestDto;
+import com.example.ecommerce.dto.CreditCardResponse;
 import com.example.ecommerce.entity.Address;
 import com.example.ecommerce.entity.CreditCard;
 import com.example.ecommerce.exceptions.ApiException;
@@ -20,23 +22,23 @@ public class CreditCardController {
     private CreditCardService creditCardService;
 
     @GetMapping()
-    public List<CreditCard> getAllCreditCards(){
+    public List<CreditCardResponse> getAllCreditCards(){
         return  creditCardService.getAllCard();
     }
     @PostMapping()
-    public CreditCard saveCreditCard(@RequestBody CreditCard creditCard){
+    public CreditCardResponse saveCreditCard(@RequestBody CreditCardRequestDto creditCardRequestDto){
         try {
-           return creditCardService.saveCard(creditCard);
+           return creditCardService.saveCard(creditCardRequestDto);
         } catch (Exception e) {
             throw new ApiException("Veri tabanında aynı kart bulunmaktadır", HttpStatus.CONFLICT);
         }
 
     }
-    @PutMapping("{id}")
-    public CreditCard updateCreditCard(@PathVariable Long id,@RequestBody CreditCard creditCard){
-        return  creditCardService.updateCard(id,creditCard);
+    @PutMapping()
+    public CreditCard updateCreditCard(@RequestBody CreditCardRequestDto creditCardRequestDto){
+        return  creditCardService.updateCard(creditCardRequestDto);
     }
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public CreditCard deleteCreditCard(@PathVariable Long id){
         return  creditCardService.deleteCard(id);
     }

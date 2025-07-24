@@ -28,9 +28,11 @@ public class SecurityConfig {
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         return  new ProviderManager(daoAuthenticationProvider);
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-        return httpSecurity.csrf(csrf->csrf.disable())
+        return httpSecurity.cors(Customizer.withDefaults())
+                .csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(auth->{
                     auth.requestMatchers("auth/**").permitAll();
                     auth.requestMatchers("/cart").hasAuthority("customer");

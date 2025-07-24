@@ -1,4 +1,5 @@
 package com.example.ecommerce.mapper;
+import com.example.ecommerce.dto.OrderItemResponseDto;
 import com.example.ecommerce.dto.OrderRequestDto;
 import com.example.ecommerce.dto.OrderResponseDto;
 import com.example.ecommerce.entity.*;
@@ -40,8 +41,13 @@ public class OrderMapper {
                 order.getCreditCard().getMonth(),
                 order.getCreditCard().getYear(),
                 order.getTotalPrice(),
-                order.getOrderItems());
+                order.getOrderItems().stream().map(orderItem -> orderItemResponseDto(orderItem)).toList());
         return  orderResponseDto;
+    }
+
+    public OrderItemResponseDto orderItemResponseDto(OrderItem orderItem){
+        return new OrderItemResponseDto(orderItem.getId(),orderItem.getProduct().getName(),orderItem.getProduct().getDescription(),orderItem.getProduct().getPrice(),orderItem.getQuantity(),
+                orderItem.getProduct().getProductImages());
     }
     public Order toEntity(OrderRequestDto orderRequestDto) {
         Order order = new Order();

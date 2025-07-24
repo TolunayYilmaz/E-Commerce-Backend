@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductMapper {
     public ProductResponseDto toResponse(Product product){
-        ProductResponseDto productResponseDto = new ProductResponseDto(product.getId(),product.getName(),
-                product.getPrice(), product.getStock(),product.getCategory(),
-                product.getSellerId(),product.getProductImages(),product.
-                getProductComments());
+        ProductResponseDto productResponseDto = new ProductResponseDto(product.getId(),product.getName(), product.getDescription(),
+                product.getPrice(), product.getStock(),product.getCategory().getId(),product.getRating(),product.getSellCount(),product.getSellerId(),
+                product.getProductImages(),
+                product.getProductComments());
         return  productResponseDto;
     }
 

@@ -37,6 +37,14 @@ public class User implements UserDetails {
     @NotBlank
     @NotEmpty
     private String password;
+    private String token;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    private String name;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", nullable = true)
+    private Store store;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     @JoinTable(name = "user_role",

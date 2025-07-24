@@ -8,10 +8,13 @@ import java.util.List;
 
 public record ProductResponseDto(Long id,
                                  String name,
+                                 String description,
                                  Double price,
                                  Integer stock,
-                                 Category categoryName,
-                                 Long sellerId,
+                                 Long category_id,
+                                 Double rating,
+                                 Integer sell_count,
+                                 Long storeId,
                                  List<ProductImage> images,
                                  List<ProductComment> comments) {
 }

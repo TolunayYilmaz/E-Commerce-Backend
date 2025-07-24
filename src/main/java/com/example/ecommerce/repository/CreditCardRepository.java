@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface CreditCardRepository extends JpaRepository<CreditCard,Long> {
 
     @Query("SELECT cc FROM CreditCard cc WHERE cc.cardNumber = :cardNumber")
-    Optional<CreditCard> getCreditCard(@Param("cardNumber") Long cardNumber);
+    Optional<CreditCard> getCreditCard(@Param("cardNumber") String cardNumber);
 }

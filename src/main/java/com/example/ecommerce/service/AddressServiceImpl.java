@@ -1,6 +1,8 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.dto.AddressRequestDto;
+import com.example.ecommerce.dto.AddressResponseDto;
+import com.example.ecommerce.dto.AddressUpdateRequestDto;
 import com.example.ecommerce.entity.Address;
 import com.example.ecommerce.entity.User;
 import com.example.ecommerce.exceptions.ApiException;
@@ -36,9 +38,10 @@ public class AddressServiceImpl extends BaseService implements AddressService{
         return addressRepository.findAll();
     }
     @Override
-    public List<Address> getUserAllAddress() {
+    public List<AddressResponseDto> getUserAllAddress() {
         User user=getCurrentUser();
-       return user.getAddressList();
+       return user.getAddressList().stream().map(address -> new AddressResponseDto(address.getId(), user.getId(),address.getTitle(), address.getName(),address.getSurname(),address.getPhoneNumber(),
+               address.getCity(),address.getDistrict(),address.getNeighborhood(),address.getAddressDetail())).toList();
     }
     @Override
     public Address deleteAddress(Long id) {
@@ -58,10 +61,10 @@ public class AddressServiceImpl extends BaseService implements AddressService{
     }
 
     @Override
-    public Address updateAddress(Long id, AddressRequestDto updatedAddress) {
+    public Address updateAddress(AddressUpdateRequestDto updatedAddress) {
         User user = getCurrentUser();
 
-        Address existingAddress = addressRepository.findById(id)
+        Address existingAddress = addressRepository.findById(updatedAddress.id())
                 .orElseThrow(() -> new ApiException("Adres bulunamadı", HttpStatus.NOT_FOUND));
 
         // Bu adres kullanıcıya ait mi? Kontrol et
@@ -73,11 +76,11 @@ public class AddressServiceImpl extends BaseService implements AddressService{
         existingAddress.setTitle(updatedAddress.title() != null ? updatedAddress.title() : existingAddress.getTitle());
         existingAddress.setName(updatedAddress.name()!= null ? updatedAddress.name():existingAddress.getTitle());
         existingAddress.setSurname(updatedAddress.surname()!= null ? updatedAddress.surname():existingAddress.getSurname());
-        existingAddress.setPhoneNumber(updatedAddress.phoneNumber()!= null ? updatedAddress.phoneNumber():existingAddress.getPhoneNumber());
+        existingAddress.setPhoneNumber(updatedAddress.phone()!= null ? updatedAddress.phone():existingAddress.getPhoneNumber());
         existingAddress.setCity(updatedAddress.city()!= null ? updatedAddress.city():existingAddress.getCity());
         existingAddress.setDistrict(updatedAddress.district()!= null ? updatedAddress.district():existingAddress.getDistrict());
         existingAddress.setNeighborhood(updatedAddress.neighborhood()!= null ? updatedAddress.neighborhood():existingAddress.getDistrict());
-        existingAddress.setAddressDetail(updatedAddress.addressDetail()!= null ?updatedAddress.addressDetail(): existingAddress.getAddressDetail());
+        existingAddress.setAddressDetail(updatedAddress.address()!= null ?updatedAddress.address(): existingAddress.getAddressDetail());
 
         return addressRepository.save(existingAddress);
     }

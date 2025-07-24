@@ -10,4 +10,5 @@ public interface RoleService {
     List<Role> getRoles();
     List<Role> addAllDefaultRole();
     Optional<Role> getRole(String authority);
+    Optional<Role> getRoleById(Long roleId);
 }

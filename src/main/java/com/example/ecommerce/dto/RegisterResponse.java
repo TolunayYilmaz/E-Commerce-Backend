@@ -1,4 +1,4 @@
 package com.example.ecommerce.dto;
 
-public record RegisterResponse(String email,String message) {
+public record RegisterResponse(String email,String message,String token) {
 }

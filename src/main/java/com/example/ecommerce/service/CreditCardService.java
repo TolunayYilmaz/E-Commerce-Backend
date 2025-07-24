@@ -1,5 +1,7 @@
 package com.example.ecommerce.service;
 
+import com.example.ecommerce.dto.CreditCardRequestDto;
+import com.example.ecommerce.dto.CreditCardResponse;
 import com.example.ecommerce.entity.CreditCard;
 
 import java.util.List;
@@ -7,9 +9,9 @@ import java.util.Optional;
 
 public interface CreditCardService {
 
-    CreditCard saveCard(CreditCard creditCard);
-    CreditCard updateCard(Long id,CreditCard creditCard);
+    CreditCardResponse saveCard(CreditCardRequestDto creditCardRequestDto);
+    CreditCard updateCard(CreditCardRequestDto creditCardRequestDto);
     CreditCard deleteCard(Long id);
-    List<CreditCard> getAllCard();
-    CreditCard getCard(Long cardNo);
+    List<CreditCardResponse> getAllCard();
+    CreditCard getCard(String cardNo);
 }

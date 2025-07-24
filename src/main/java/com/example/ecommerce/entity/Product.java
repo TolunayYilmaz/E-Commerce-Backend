@@ -21,6 +21,9 @@ public class Product {
     private Double price;
 
     private Integer stock;
+    private String description;
+    private Double rating;
+    private Integer sellCount;
 
     @Column(name = "is_active")
     private boolean isActive;

@@ -1,6 +1,8 @@
 package com.example.ecommerce.controller;
 
 import com.example.ecommerce.dto.AddressRequestDto;
+import com.example.ecommerce.dto.AddressResponseDto;
+import com.example.ecommerce.dto.AddressUpdateRequestDto;
 import com.example.ecommerce.entity.Address;
 import com.example.ecommerce.repository.UserRepository;
 import com.example.ecommerce.service.AddressService;
@@ -19,7 +21,7 @@ public class AddressController {
     private AddressService addressService;
 
     @GetMapping("/address")
-    public List<Address> getAllAddress(){
+    public List<AddressResponseDto>getAllAddress(){
         return  addressService.getUserAllAddress();
     }
     @PostMapping("/address")
@@ -27,9 +29,9 @@ public class AddressController {
 
         return  addressService.addAddress(addressRequestDto);
     }
-    @PutMapping("/address/{id}")
-    public Address updateAddress(@PathVariable Long id,@RequestBody AddressRequestDto address){
-        return  addressService.updateAddress(id,address);
+    @PutMapping("/address")
+    public Address updateAddress(@RequestBody AddressUpdateRequestDto updateRequestDto){
+        return  addressService.updateAddress(updateRequestDto);
     }
     @DeleteMapping("/address/{id}")
     public Address deleteAddress(@PathVariable Long id){

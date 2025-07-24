@@ -6,17 +6,24 @@ import com.example.ecommerce.entity.Category;
 import com.example.ecommerce.entity.Product;
 import com.example.ecommerce.entity.ProductImage;
 import com.example.ecommerce.repository.CategoryRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 @Component
+
 public class FetchMapper {
+
     public Product mapToEntity(ProductDto dto, CategoryRepository categoryRepository) {
         Product product = new Product();
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
         product.setStock(dto.getStock());
         product.setSellerId(dto.getSellerId());
+        product.setDescription(dto.getDescription());
+        product.setRating(dto.getRating());
+        product.setSellerId(dto.getSellerId());
+        product.setSellCount(dto.getSellCount());
         product.setActive(true); // default
         product.setCategory(categoryRepository.findById(dto.getCategoryId()).orElse(null));
 

@@ -47,6 +47,10 @@ public class RoleServiceImpl implements RoleService
     public Optional<Role> getRole(String authority) {
         return roleRepository.finbyRole(authority);
     }
+    @Override
+    public Optional<Role> getRoleById(Long roleId) {
+        return roleRepository.findById(roleId);
+    }
 
 
 }

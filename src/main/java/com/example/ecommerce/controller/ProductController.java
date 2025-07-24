@@ -3,12 +3,15 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.dto.ProductResponseCommentDto;
 import com.example.ecommerce.dto.ProductRequestDto;
 import com.example.ecommerce.dto.ProductResponseDto;
+import com.example.ecommerce.dto.ProductsResponseDto;
 import com.example.ecommerce.entity.ProductComment;
 import com.example.ecommerce.service.CommentService;
 import com.example.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,10 +26,42 @@ public class ProductController {
     private final ProductService productService;
     @Autowired
     private  final CommentService commentService;
+//    @GetMapping()
+//    public ProductsResponseDto getAllProducts(@RequestParam(required = false) Long category,@RequestParam(defaultValue = "0") int offset,
+//                                              @RequestParam(defaultValue = "25") int size) {
+//        int page = offset / size;
+//        Pageable pageable = PageRequest.of(page, size);
+//        return productService.getAllProducts(category,pageable);
+//    }
+
     @GetMapping()
-    public List<ProductResponseDto> getAllProducts(@PageableDefault(size = 25) Pageable pageable){
-        return productService.getAllProducts(pageable);
+    public ProductsResponseDto getAllProducts(
+            @RequestParam(required = false) Long category,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "25") int size,
+            @RequestParam(required = false) String sort
+    ) {
+        int page = offset / size;
+
+        Sort sortObj = Sort.unsorted(); // default sıralama
+
+        if (sort != null && !sort.isBlank()) {
+            String[] sortParts = sort.split(":");
+            if (sortParts.length == 2) {
+                String sortBy = sortParts[0]; // Örn: "price", "id", "name"
+                String direction = sortParts[1]; // "asc" veya "desc"
+                sortObj = direction.equalsIgnoreCase("desc")
+                        ? Sort.by(sortBy).descending()
+                        : Sort.by(sortBy).ascending();
+            }
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sortObj);
+
+        return productService.getAllProducts(category, pageable);
     }
+
+
     @PostMapping()
     public ProductResponseDto createProduct(@RequestBody@Validated ProductRequestDto productRequestDto){
         return productService.createProduct(productRequestDto);

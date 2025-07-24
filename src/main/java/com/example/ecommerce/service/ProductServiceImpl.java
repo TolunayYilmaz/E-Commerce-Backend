@@ -1,9 +1,6 @@
 package com.example.ecommerce.service;
 
-import com.example.ecommerce.dto.CategoryDto;
-import com.example.ecommerce.dto.ProductDto;
-import com.example.ecommerce.dto.ProductRequestDto;
-import com.example.ecommerce.dto.ProductResponseDto;
+import com.example.ecommerce.dto.*;
 import com.example.ecommerce.entity.Category;
 import com.example.ecommerce.entity.Product;
 import com.example.ecommerce.entity.ProductImage;
@@ -15,6 +12,7 @@ import com.example.ecommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,13 +40,41 @@ public class ProductServiceImpl implements ProductService{
     private  final CategoryRepository categoryRepository;
     @Autowired
     private  final FetchMapper fetchMapper;
+//
+//    @Override
+//    public ProductsResponseDto getAllProducts(Long categoryId, Pageable pageable) {
+//        Page<Product> productPage;
+//
+//        if (categoryId != null) {
+//            productPage = productRepository.findByCategoryId(categoryId, pageable); // veya yukarıdaki @Query'li versiyon
+//        } else {
+//            productPage = productRepository.findAll(pageable);
+//        }
+//
+//        List<ProductResponseDto> productResponseList = productPage.getContent()
+//                .stream()
+//                .map(productMapper::toResponse)
+//                .toList();
+//
+//        return new ProductsResponseDto(productResponseList);
+//    }
 
     @Override
-    public List<ProductResponseDto> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable)
+    public ProductsResponseDto getAllProducts(Long categoryId, Pageable pageable) {
+        Page<Product> productPage;
+
+        if (categoryId != null) {
+            productPage = productRepository.findByCategoryId(categoryId, pageable);
+        } else {
+            productPage = productRepository.findAll(pageable);
+        }
+
+        List<ProductResponseDto> productResponseList = productPage.getContent()
                 .stream()
                 .map(productMapper::toResponse)
                 .toList();
+
+        return new ProductsResponseDto(productResponseList);
     }
 
 

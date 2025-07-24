@@ -1,8 +1,11 @@
 package com.example.ecommerce.service;
 
+import com.example.ecommerce.dto.CreditCardRequestDto;
+import com.example.ecommerce.dto.CreditCardResponse;
 import com.example.ecommerce.entity.CreditCard;
 import com.example.ecommerce.entity.User;
 import com.example.ecommerce.exceptions.ApiException;
+import com.example.ecommerce.mapper.CreditCardMapper;
 import com.example.ecommerce.repository.CreditCardRepository;
 import com.example.ecommerce.service.parent.BaseService;
 import lombok.RequiredArgsConstructor;
@@ -18,28 +21,31 @@ public class CreditCardServiceImpl extends BaseService implements CreditCardServ
     @Autowired
     private CreditCardRepository creditCardRepository;
 
+    @Autowired
+    private CreditCardMapper creditCardMapper;
 
     @Override
-    public CreditCard saveCard(CreditCard creditCard) {
+    public CreditCardResponse saveCard(CreditCardRequestDto creditCardRequestDto) {
         User user=getCurrentUser();
+        CreditCard creditCard=creditCardMapper.toEntity(creditCardRequestDto, user.getId());
         if(user.getCreditCardList().contains(creditCard)){
             throw new ApiException("Aynı adresi ekleyemezsin",HttpStatus.CONFLICT);
         }
         user.getCreditCardList().add(creditCard);
-        return creditCardRepository.save(creditCard);
+        return creditCardMapper.toResponse(creditCardRepository.save(creditCard));
     }
 
     @Override
-    public CreditCard updateCard(Long id, CreditCard creditCard) {
+    public CreditCard updateCard(CreditCardRequestDto creditCardRequestDto) {
         User user=getCurrentUser();
-        CreditCard creditCardOptional = creditCardRepository.findById(id).orElseThrow(()->   new ApiException("Kart bulunamadı", HttpStatus.NOT_FOUND));
+        CreditCard creditCardOptional = creditCardRepository.findById(creditCardRequestDto.id()).orElseThrow(()->   new ApiException("Kart bulunamadı", HttpStatus.NOT_FOUND));
         if(!user.getCreditCardList().contains(creditCardOptional)){
             throw new ApiException("Bu kartı güncelleme yetkiniz bulunmamaktadır",HttpStatus.NOT_FOUND);
         }
-        creditCardOptional.setCardName(creditCard.getCardName());
-        creditCardOptional.setCardNumber(creditCard.getCardNumber());
-        creditCardOptional.setYear(creditCard.getYear());
-        creditCardOptional.setMonth(creditCard.getMonth());
+        creditCardOptional.setCardName(creditCardRequestDto.nameOnCard());
+        creditCardOptional.setCardNumber(creditCardRequestDto.cardNo());
+        creditCardOptional.setYear(creditCardRequestDto.expireYear());
+        creditCardOptional.setMonth(creditCardRequestDto.expireMonth());
         return creditCardRepository.save(creditCardOptional);
     }
 
@@ -59,16 +65,16 @@ public class CreditCardServiceImpl extends BaseService implements CreditCardServ
     }
 
     @Override
-    public List<CreditCard> getAllCard() {
+    public List<CreditCardResponse> getAllCard() {
         User user=getCurrentUser();
        if( user.getCreditCardList().isEmpty()){
            throw new ApiException("Kullanıcıya ait kart bulunmamaktadır.",HttpStatus.NOT_FOUND);
        }
-        return user.getCreditCardList();
+        return user.getCreditCardList().stream().map(card->creditCardMapper.toResponse(card)).toList();
     }
 
     @Override
-    public CreditCard getCard(Long cardNo) {
+    public CreditCard getCard(String cardNo) {
         return creditCardRepository.getCreditCard(cardNo).orElseThrow(()->new ApiException("Kredi kartı bulunamadı",HttpStatus.NOT_FOUND));
     }
 
